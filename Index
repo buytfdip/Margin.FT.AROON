@@ -11,7 +11,7 @@ SS_PCT = params.add "Short Stop Loss %", 2
 LS_PCT = params.add "Long Stop Loss %", 2
 ST_PCT = params.add "Short Profit Take %", 15
 LT_PCT = params.add "Long Profit Take %", 15
-AU_P = params.add "AROON Period", 40
+AU_P = params.add "AROON Period", 25
 
 class Margin
 
@@ -176,7 +176,7 @@ handle: (context, data) ->
             storage.consecutiveBuySignals += 1
 
 #long order
-            if (aD_2 < aU and aD >= aU)
+            if (aD_2 > aU and aD <= aU)
                 if pos and storage.short
                     try
                         mt.closePosition i
@@ -192,7 +192,7 @@ handle: (context, data) ->
                         storage.shortStop = false
                         storage.consecutiveBuySignals = 0
                         storage.consecutiveSellSignals = 0                        
-            if (storage.consecutiveBuySignals >= CONSECUTIVE_BUY_SIGNALS and aD >= aU)           
+            if (storage.consecutiveBuySignals >= CONSECUTIVE_BUY_SIGNALS and aD <= aU)           
                 if !pos and !storage.long
                     if (@Margin.OpenLong(pos, i, i.price, info.tradable_balance, info))
                         storage.startBalance = info.margin_balance
@@ -249,7 +249,7 @@ handle: (context, data) ->
             storage.consecutiveBuySignals = 0
 
 #short order
-            if (aD_2 > aU and aD <= aU)
+            if (aD_2 < aU and aD >= aU)
                 if pos and storage.long
                     try
                         mt.closePosition i
@@ -265,7 +265,7 @@ handle: (context, data) ->
                         storage.shortStop = false
                         storage.consecutiveBuySignals = 0
                         storage.consecutiveSellSignals = 0                      
-            if (storage.consecutiveSellSignals >= CONSECUTIVE_SELL_SIGNALS  and aD <= aU)
+            if (storage.consecutiveSellSignals >= CONSECUTIVE_SELL_SIGNALS  and aD >= aU)
                 if !pos and !storage.short
                     try
                         if (@Margin.OpenShort(pos, i, i.price, info.tradable_balance, info))
