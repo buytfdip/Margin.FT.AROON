@@ -11,7 +11,7 @@ SS_PCT = params.add "Short Stop Loss %", 2
 LS_PCT = params.add "Long Stop Loss %", 2
 ST_PCT = params.add "Short Profit Take %", 15
 LT_PCT = params.add "Long Profit Take %", 15
-AU_P = params.add "AROON Period", 24
+AU_P = params.add "AROON Period", 40
 
 class Margin
 
@@ -62,6 +62,11 @@ init: (context) ->
             lineWidth: 3
         "AROON DOWN":
             color: 'rgba(255, 51, 153, .25)'
+            size: 3
+            secondary: true
+            lineWidth: 3
+        "MACD Signal":
+            color: 'rgba(5, 51, 153, .25)'
             size: 3
             secondary: true
             lineWidth: 3
@@ -120,7 +125,7 @@ handle: (context, data) ->
         optInSignalPeriod: shortPeriod
 
     m = macd.outMACD
-    s = macd.outMACDSignal
+    s = _.last(macd.outMACDSignal)
     h = macd.outMACDHist
 
     median = talib.MEDPRICE
@@ -342,6 +347,8 @@ handle: (context, data) ->
     warn "--------------------------------------------------------------"
     debug " "       
 #graph plots
+    #plot
+     #   "MACD Signal": s
     plot
         "AROON UP": aU
     plot
